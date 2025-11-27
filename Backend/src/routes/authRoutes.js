@@ -2,8 +2,11 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const router = express.Router();
+const bcrypt = require('bcrypt');
 
 const SECRET_KEY = process.env.JWT_SECRET;
+
+const SALT_ROUNDS = 10
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -37,6 +40,35 @@ router.post('/login', async (req, res) => {
   } catch (error) {
     res.status(500).json({ msg: 'Erro interno do servidor.' });
   }
+});
+
+router.post('/register', async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        
+        if (!username || !password) {
+            return res.status(400).json({ msg: 'Usuário e senha são obrigatórios.' });
+        }
+        
+        const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+        const newUser = new User({ username, password: hashedPassword });
+        await newUser.save();
+        
+        res.status(201).json({ 
+            msg: 'Usuário cadastrado com sucesso.', 
+            user: { username: newUser.username, id: newUser._id } 
+        });
+
+    } catch (error) {
+        if (error.code === 11000) { 
+            return res.status(409).json({ msg: 'Nome de usuário já existe.' });
+        }
+        res.status(500).json({ msg: 'Erro interno do servidor.',
+          details: process.env.NODE_ENV !== 'production' ? error.message : undefined
+         });
+        
+    }
 });
 
 module.exports = router;

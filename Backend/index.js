@@ -1,10 +1,12 @@
+require('dotenv').config();
+
+console.log('Variável MONGODB_URI lida:', process.env.MONGODB_URI);
+
 const express = require('express')
 const connectDB = require('./src/config/db');
 const authRoutes = require('./src/routes/authRoutes');
 const bookRoutes = require('./src/routes/bookRoutes');
 const compression = require('compression');
-
-require('dotenv').config();
 
 const app = express()
 
