@@ -127,7 +127,7 @@ router.put('/books/:id', authenticateToken, async (req, res) => {
             bookId, 
             { $set: updates }, 
             { new: true, runValidators: true }
-
+        )
         if (!updatedBook) {
             return res.status(404).json({ msg: 'Livro não encontrado para atualização.' });
         }
