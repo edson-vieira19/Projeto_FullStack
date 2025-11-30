@@ -3,6 +3,16 @@ import React from "react";
 import { Box, Typography, Button, Container, Paper } from "@mui/material";
 
 function Inicio({ onNavigate }) {
+
+  const handleNavigation = () => {
+    const token = localStorage.getItem('userToken'); 
+    if (token) {
+      onNavigate('buscar');
+    } else {
+      onNavigate('login');
+    }
+  };
+
   return (
     <Box
       sx={{
@@ -58,7 +68,7 @@ function Inicio({ onNavigate }) {
               fontSize: "1.1rem",
               fontWeight: "bold",
             }}
-            onClick={() => onNavigate("buscar")}
+            onClick={handleNavigation}
           >
             Iniciar
           </Button>

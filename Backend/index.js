@@ -7,8 +7,29 @@ const connectDB = require('./src/config/db');
 const authRoutes = require('./src/routes/authRoutes');
 const bookRoutes = require('./src/routes/bookRoutes');
 const compression = require('compression');
+const cors = require('cors');
 
 const app = express()
+
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173'
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); 
+
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+};
+
+app.use(cors(corsOptions));
 
 const PORT = process.env.PORT || 3000;
 

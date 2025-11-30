@@ -24,13 +24,45 @@ function Header({ onNavigate }) {
     setAnchorEl(null);
   };
 
-  const menuItems = [
+  const isUserLoggedIn = () => {
+      return !!localStorage.getItem('userToken'); 
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('userToken');
+    handleMenuClose();
+    onNavigate('inicio'); 
+  };
+
+  const baseMenuItems = [
+    { label: "Início", key: "inicio" },
+    { label: "Buscar", key: "buscar" },
+    { label: "Minha Lista", key: "lista" },
+    { label: "Sobre", key: "sobre" },
+  ];
+
+  const authItem = isUserLoggedIn()
+    ? { label: "Logout", key: "logout", action: handleLogout }
+    : { label: "Login", key: "login", action: () => onNavigate('login') };
+
+  const menuItems = [...baseMenuItems, authItem];
+
+  const handleItemClick = (item) => {
+    if (item.action) {
+      item.action();
+    } else {
+      onNavigate(item.key);
+      handleMenuClose();
+    }
+  };
+
+/*   const menuItems = [
     { label: "Início", key: "inicio" },
     { label: "Buscar", key: "buscar" },
     { label: "Minha Lista", key: "lista" },
     { label: "Sobre", key: "sobre" },
     {label:"LOGIN", key: "login"}
-  ];
+  ]; */
 
   return (
     <AppBar
@@ -74,7 +106,7 @@ function Header({ onNavigate }) {
         <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
           {menuItems.map((item) => (
             <Button key={item.key} sx={{ color: "white", fontSize: "1rem" }}
-            onClick={() => onNavigate(item.key)}
+            onClick={() => handleItemClick(item)}
             >
               {item.label}
             </Button>
@@ -106,9 +138,9 @@ function Header({ onNavigate }) {
             {menuItems.map((item) => (
               <MenuItem
                   key={item.key}
+
                   onClick={() => {
-                  onNavigate(item.key);
-                  handleMenuClose();
+                 handleItemClick(item)
                 }}
                >
                 {item.label}
