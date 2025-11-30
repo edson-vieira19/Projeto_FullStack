@@ -70,7 +70,8 @@ router.get('/books', authenticateToken, async (req, res) => {
     const totalItems = await Book.countDocuments(query);
     const books = await Book.find(query)
                             .skip(skip)
-                            .limit(limit);
+                            .limit(limit)
+                            .sort({ _id: -1 });
     
     const responseData = {
         page: page,
@@ -91,10 +92,10 @@ router.get('/books', authenticateToken, async (req, res) => {
   }
 });
 
-//buscar pelo id
+
 router.get('/books/:id', authenticateToken, async (req, res) => {
     try {
-        const bookId = sanitize(req.params.id); // Sanitiza o ID para evitar injeção
+        const bookId = sanitize(req.params.id);
 
         const book = await Book.findById(bookId);
 

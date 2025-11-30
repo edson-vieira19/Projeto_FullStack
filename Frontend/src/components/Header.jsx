@@ -138,9 +138,10 @@ function Header({ onNavigate }) {
             {menuItems.map((item) => (
               <MenuItem
                   key={item.key}
-
                   onClick={() => {
-                 handleItemClick(item)
+                    onNavigate(item.key);
+                    handleMenuClose();
+                 //handleItemClick(item)
                 }}
                >
                 {item.label}

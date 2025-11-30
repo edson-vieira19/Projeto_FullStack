@@ -18,9 +18,12 @@ import {
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import AssignmentAddIcon from '@mui/icons-material/AssignmentAdd';
 import SearchIcon from "@mui/icons-material/Search";
+import Pagination from '@mui/material/Pagination';
 import { useLista } from "../contexts/ListaContext";
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+const LIMIT_PER_PAGE = 6;
 
 const BuscarLivro = ({ onNavigate }) => { 
   
@@ -30,6 +33,8 @@ const BuscarLivro = ({ onNavigate }) => {
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const { dispatch } = useLista();
   const [error, setError] = useState(null); 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   
   const isUserLoggedIn = () => {
     return !!localStorage.getItem('userToken');
@@ -51,10 +56,12 @@ const BuscarLivro = ({ onNavigate }) => {
       return; 
     }
     
-    const query = valor.trim() ? `?title=${encodeURIComponent(valor.trim())}` : '';
+    const baseQuery = valor.trim() 
+    ? `?title=${encodeURIComponent(valor.trim())}&page=1&limit=${LIMIT_PER_PAGE}` 
+    : `?page=${currentPage}&limit=${LIMIT_PER_PAGE}`;
     
     try {
-      const response = await fetch(`${API_URL}/api/books${query}`, {
+      const response = await fetch(`${API_URL}/api/books${baseQuery}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`, 
@@ -75,6 +82,8 @@ const BuscarLivro = ({ onNavigate }) => {
       const data = await response.json();
     
       const booksArray = Array.isArray(data) ? data : (data.data || []);
+
+      setTotalPages(data.totalPages || 1);
       
       if (booksArray.length === 0) {
          setError("Nenhum livro encontrado com o termo de busca.");
@@ -108,7 +117,7 @@ const BuscarLivro = ({ onNavigate }) => {
          setError("Você precisa estar logado para carregar e buscar livros.");
     }
     
-  }, []); 
+  }, [currentPage]); 
 
 
   const handleAdicionar = (livro) => {
@@ -130,6 +139,10 @@ const BuscarLivro = ({ onNavigate }) => {
   
   const handleCadastroClick = () => {
     onNavigate('cadastrar'); 
+  };
+
+  const handlePageChange = (event, value) => {
+    setCurrentPage(value);
   };
   
   return (
@@ -205,7 +218,7 @@ const BuscarLivro = ({ onNavigate }) => {
         sx={{ mt: 4, mb: 6, maxWidth: 900, mx: "auto" }}
       >
         {resultados.map((livro, index) => (
-          <Grid key={`${livro.id}-${index}`} item xs={12} sm={6} md={4}> 
+          <Grid key={`${livro.id}-${index}`} xs={12} sm={6} md={4}> 
             <Card
               sx={{ display: "flex", flexDirection: "column", height: "100%", width: 250, boxShadow: 3,
                 "&:hover": {
@@ -254,6 +267,17 @@ const BuscarLivro = ({ onNavigate }) => {
           </Grid>
         ))}
       </Grid>
+      {totalPages > 1 && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', my: 4 }}>
+          <Pagination 
+            count={totalPages} 
+            page={currentPage} 
+            onChange={handlePageChange} 
+            color="primary"
+            size="large"
+          />
+        </Box>
+      )}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={2500}
@@ -273,3 +297,4 @@ const BuscarLivro = ({ onNavigate }) => {
 };
 
 export default BuscarLivro;
+
