@@ -29,6 +29,7 @@ function Header({ onNavigate }) {
     { label: "Buscar", key: "buscar" },
     { label: "Minha Lista", key: "lista" },
     { label: "Sobre", key: "sobre" },
+    {label:"LOGIN", key: "login"}
   ];
 
   return (
@@ -36,7 +37,7 @@ function Header({ onNavigate }) {
       position="static"
       color="primary"
       /*  sx={{
-          backgroundColor: "#1e6fb7ff", // um azul mais equilibrado
+          backgroundColor: "#1e6fb7ff",
           boxShadow: 2,
         }} */
     >

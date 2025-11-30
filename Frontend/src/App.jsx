@@ -3,11 +3,12 @@ import "./App.css";
 import { Box } from "@mui/material";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import TesteApi from "./components/TesteApi";
+//import TesteApi from "./components/TesteApi";
 import Inicio from "./components/Inicio";
 import BuscarLivro from "./components/BuscarLivro";
 import MinhaLista from "./components/MinhaLista";
 import Sobre from "./components/Sobre";
+import Login from "./components/Login";
 import { ListaProvider } from "./contexts/ListaContext";
 
 function App() {
@@ -23,6 +24,9 @@ function App() {
         return <MinhaLista />;
       case "sobre":
         return <Sobre />;
+      case "login":
+        return <Login onNavigate={setPaginaAtual} />;
+
       default:
         return <Inicio onNavigate={setPaginaAtual} />;
     }
