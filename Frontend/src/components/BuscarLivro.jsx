@@ -13,11 +13,18 @@ import {
   Snackbar,
   Alert,
   InputAdornment,
-  Button, 
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  CircularProgress 
 } from "@mui/material";
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import AssignmentAddIcon from '@mui/icons-material/AssignmentAdd';
 import SearchIcon from "@mui/icons-material/Search";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import Pagination from '@mui/material/Pagination';
 import { useLista } from "../contexts/ListaContext";
 
@@ -35,19 +42,29 @@ const BuscarLivro = ({ onNavigate }) => {
   const [error, setError] = useState(null); 
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  
+  const [loading, setLoading] = useState(false);
+  const [refreshCounter, setRefreshCounter] = useState(0);
+  const [editingBook, setEditingBook] = useState(null); 
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [editFormData, setEditFormData] = useState({ title: '', author: '', year: '', thumbnail: '' });
+
   const isUserLoggedIn = () => {
     return !!localStorage.getItem('userToken');
   };
 
   const handleBuscar = async (valor = "") => {
+    setLoading(true);
     setError(null);
+    setResultados([]);
+    setTotalPages(1);
+
     const token = localStorage.getItem('userToken');
 
-    if (!token) {
-        setError("Você precisa estar logado para carregar e buscar livros.");
-        setResultados([]); 
-        return;
+    if (!isUserLoggedIn()) {
+      setError('necessario login na aplicação');
+      onNavigate('login');
+      setLoading(false);
+      return;
     }
 
     if (valor.length > 0 && valor.length < 3) {
@@ -100,14 +117,110 @@ const BuscarLivro = ({ onNavigate }) => {
 
 
       setResultados(mappedBooks);
-      setOpcoes(mappedBooks.map(book => book.label)); 
+      setOpcoes(mappedBooks.map(book => book.titulo)); 
 
     } catch (err) {
-      console.error("Erro na busca de livros:", err);
-      setError("Erro ao carregar os livros. Verifique se o Back-end está rodando.");
-      setResultados([]); 
-      setOpcoes([]);
+      console.error("Erro na busca:", err);
+      setError(err.message || "Erro de rede ao buscar livros.");
+    } finally {
+        setLoading(false);
     }
+  };
+
+  const handleDelete = async (bookId) => {
+    if (!window.confirm("Tem certeza que deseja excluir este livro?")) {
+        return;
+    }
+    const token = localStorage.getItem('userToken');
+    if (!token || !isUserLoggedIn()) {
+        setError('Sessão expirada. Faça login novamente.');
+        onNavigate('login');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/api/books/${bookId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+
+        if (response.status === 204) {
+            setSnackbarMessage("Livro excluído com sucesso.");
+            setOpenSnackbar(true);
+            setRefreshCounter(prev => prev + 1);
+        } else if (response.status === 404) {
+             setError("Livro não encontrado para exclusão.");
+        } else if (response.status === 401 || response.status === 403) {
+            setError('Não autorizado. Faça login novamente.');
+            localStorage.removeItem('userToken');
+            onNavigate('login');
+        } else {
+            const errorData = await response.json();
+            setError(errorData.msg || "Erro desconhecido ao excluir o livro.");
+        }
+
+    } catch (err) {
+        console.error("Erro na exclusão:", err);
+        setError(err.message || "Erro de rede ao tentar excluir.");
+    }
+  };
+
+  const handleUpdateBook = async (e) => {
+    e.preventDefault();
+    setError(null);
+    
+    const token = localStorage.getItem('userToken');
+    if (!token || !isUserLoggedIn()) {
+        setError('Sessão expirada. Faça login novamente.');
+        onNavigate('login');
+        return;
+    }
+
+    try {
+        const dataToSend = { 
+            ...editFormData, 
+            year: parseInt(editFormData.year),
+        };
+        
+        if (!dataToSend.title || !dataToSend.author || isNaN(dataToSend.year)) {
+             throw new Error("Preencha Título, Autor e Ano válidos.");
+        }
+        
+        const response = await fetch(`${API_URL}/api/books/${editFormData.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify(dataToSend),
+        });
+
+        if (response.status === 401 || response.status === 403) {
+             localStorage.removeItem('userToken');
+             onNavigate('login');
+             return;
+        }
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.msg || "Erro desconhecido ao atualizar o livro.");
+        }
+
+        handleCloseEditModal(); 
+        setSnackbarMessage(`Livro "${editFormData.title}" atualizado com sucesso!`);
+        setOpenSnackbar(true);
+        setRefreshCounter(prev => prev + 1);
+
+    } catch (err) {
+        console.error("Erro na atualização:", err);
+        setError(err.message);
+    }
+  };
+
+  const handlePageChanges = (event, value) => {
+    setCurrentPage(value);
   };
 
   useEffect(() => {
@@ -117,7 +230,7 @@ const BuscarLivro = ({ onNavigate }) => {
          setError("Você precisa estar logado para carregar e buscar livros.");
     }
     
-  }, [currentPage]); 
+  }, [currentPage,refreshCounter]); 
 
 
   const handleAdicionar = (livro) => {
@@ -128,6 +241,28 @@ const BuscarLivro = ({ onNavigate }) => {
       : livro.titulo;
     setSnackbarMessage(`O Livro "${shortTitle}" foi adicionado à lista!`);
     setOpenSnackbar(true);
+  };
+
+  const handleOpenEditModal = (livro) => {
+    setEditingBook(livro);
+    setEditFormData({ 
+      id: livro.id,
+      title: livro.titulo, 
+      author: livro.autores, 
+      year: livro.ano, 
+      thumbnail: livro.thumbnail 
+    });
+    setOpenEditModal(true);
+  };
+  const handleCloseEditModal = () => {
+    setOpenEditModal(false);
+    setEditingBook(null);
+    setError(null);
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value } = e.target;
+    setEditFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleCloseSnackbar = (event, reason) => {
@@ -252,7 +387,29 @@ const BuscarLivro = ({ onNavigate }) => {
                   {livro.ano}
                 </Typography>
               </CardContent>
+              
               <Box sx={{ textAlign: "right", px: 1, pb: 1, pt: 0 }}>
+                <Box>
+                    <Tooltip title="Editar Livro">
+                        <IconButton
+                            onClick={() => handleOpenEditModal(livro)}
+                            color="info"
+                            size="small"
+                        >
+                            <EditIcon />
+                        </IconButton>
+                    </Tooltip>
+                    
+                    <Tooltip title="Excluir Livro">
+                        <IconButton
+                            onClick={() => handleDelete(livro.id)} // Usando livro.id (que é o _id do MongoDB)
+                            color="error"
+                            size="small"
+                        >
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
+                </Box>
                 <Tooltip title="Adicionar à lista de leitura">
                   <IconButton
                     onClick={() => handleAdicionar(livro)}
@@ -278,6 +435,60 @@ const BuscarLivro = ({ onNavigate }) => {
           />
         </Box>
       )}
+      <Dialog open={openEditModal} onClose={handleCloseEditModal}>
+        <DialogTitle>Editar Livro: {editingBook?.titulo}</DialogTitle>
+        <Box component="form" onSubmit={handleUpdateBook}>
+        <DialogContent sx={{ pt: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {error && <Alert severity="error">{error}</Alert>}
+            
+            <TextField
+                label="Título do Livro"
+                name="title"
+                value={editFormData.title}
+                onChange={handleEditChange}
+                required
+                fullWidth
+                margin="dense"
+            />
+            <TextField
+                label="Autor"
+                name="author"
+                value={editFormData.author}
+                onChange={handleEditChange}
+                required
+                fullWidth
+                margin="dense"
+            />
+            <TextField
+                label="Ano de Publicação"
+                name="year"
+                type="number"
+                value={editFormData.year}
+                onChange={handleEditChange}
+                required
+                fullWidth
+                margin="dense"
+            />
+            <TextField
+                label="URL da Capa (Thumbnail)"
+                name="thumbnail"
+                value={editFormData.thumbnail}
+                onChange={handleEditChange}
+                fullWidth
+                margin="dense"
+                placeholder="Ex: https://m.media-amazon.com/images/..."
+            />
+        </DialogContent>
+        <DialogActions>
+            <Button onClick={handleCloseEditModal} color="secondary">
+                Cancelar
+            </Button>
+            <Button type="submit" variant="contained" color="primary">
+                Salvar Alterações
+            </Button>
+        </DialogActions>
+        </Box>
+      </Dialog>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={2500}

@@ -11,7 +11,19 @@ const getCacheKey = (req) => {
     return `books:page:${page}:limit:${limit}:title:${sanitize(title)}`;
 };
 
-//inserir novo livro
+const deleteKeysByPattern = async (pattern) => {
+    let cursor = '0'; 
+    do {
+        const [nextCursor, keys] = await redisClient.scan(cursor, 'MATCH', pattern, 'COUNT', 100);
+        cursor = nextCursor;
+
+        if (keys.length > 0) {
+            await redisClient.del(keys);
+            console.log(`Redis: Deletadas ${keys.length} chaves que correspondem a ${pattern}`);
+        }
+    } while (cursor !== '0');
+};
+
 router.post('/books', authenticateToken, async (req, res) => {
   try {
     const { title, author, year, thumbnail } = req.body;
@@ -28,8 +40,8 @@ router.post('/books', authenticateToken, async (req, res) => {
     });
 
     const book = await newBook.save();
-
-    await redisClient.del('books:*'); 
+    
+    await deleteKeysByPattern('books:*');
     console.log(`Cache invalidado. Livro inserido por ${req.user.username}: ${book.title}`); 
 
     res.status(201).json(book);
@@ -42,7 +54,6 @@ router.post('/books', authenticateToken, async (req, res) => {
   }
 });
 
-
 router.get('/books', authenticateToken, async (req, res) => {
 
   const page = parseInt(req.query.page) || 1;
@@ -54,7 +65,7 @@ router.get('/books', authenticateToken, async (req, res) => {
   const cachedData = await redisClient.get(cacheKey);
 
   if (cachedData) {
-    console.log(`Cache Hit: Retornando livros (Pág ${page}) do Redis.`);
+    console.log(`Cache Hit: Retornando livros (Pág ${cacheKey}) do Redis.`);
     return res.json(JSON.parse(cachedData));
   }
 
@@ -133,7 +144,7 @@ router.put('/books/:id', authenticateToken, async (req, res) => {
             return res.status(404).json({ msg: 'Livro não encontrado para atualização.' });
         }
         
-        await redisClient.del('books:*'); 
+        await deleteKeysByPattern('books:*');
         console.log(`Cache invalidado. Livro atualizado: ${updatedBook.title}`); 
 
         res.json(updatedBook);
@@ -157,7 +168,7 @@ router.delete('/books/:id', authenticateToken, async (req, res) => {
             return res.status(404).json({ msg: 'Livro não encontrado para exclusão.' });
         }
         
-        await redisClient.del('books:*'); 
+        await deleteKeysByPattern('books:*'); 
         console.log(`Cache invalidado. Livro excluído: ${deletedBook.title}`); 
 
         res.status(204).send(); 
