@@ -91,7 +91,7 @@ router.get('/books', authenticateToken, async (req, res) => {
   }
 });
 
-//buscar todos livros
+//buscar pelo id
 router.get('/books/:id', authenticateToken, async (req, res) => {
     try {
         const bookId = sanitize(req.params.id); // Sanitiza o ID para evitar injeção
