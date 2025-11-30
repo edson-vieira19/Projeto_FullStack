@@ -6,6 +6,7 @@ import Footer from "./components/Footer";
 //import TesteApi from "./components/TesteApi";
 import Inicio from "./components/Inicio";
 import BuscarLivro from "./components/BuscarLivro";
+import CadastrarLivro from "./components/CadastrarLivro";
 import MinhaLista from "./components/MinhaLista";
 import Sobre from "./components/Sobre";
 import Login from "./components/Login";
@@ -19,13 +20,15 @@ function App() {
       case "inicio":
         return <Inicio onNavigate={setPaginaAtual} />;
       case "buscar":
-        return <BuscarLivro />;
+        return <BuscarLivro onNavigate={setPaginaAtual} />;
       case "lista":
         return <MinhaLista />;
       case "sobre":
         return <Sobre />;
       case "login":
         return <Login onNavigate={setPaginaAtual} />;
+      case "cadastrar":
+        return <CadastrarLivro onNavigate={setPaginaAtual} />;  
 
       default:
         return <Inicio onNavigate={setPaginaAtual} />;

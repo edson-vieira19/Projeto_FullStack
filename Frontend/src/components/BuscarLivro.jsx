@@ -12,6 +12,7 @@ import {
   Grid,
   Snackbar,
   Alert,
+  Button,
   InputAdornment
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
@@ -20,13 +21,17 @@ import AssignmentAddIcon from '@mui/icons-material/AssignmentAdd';
 import SearchIcon from "@mui/icons-material/Search";
 import { useLista } from "../contexts/ListaContext";
 
-const BuscarLivro = () => {
+const BuscarLivro = ({ onNavigate }) => {
   //const [busca, setBusca] = useState("");
   const [opcoes, setOpcoes] = useState([]);
   const [resultados, setResultados] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const { dispatch } = useLista();
+
+  const isUserLoggedIn = () => {
+    return !!localStorage.getItem('userToken');
+  };
 
   const handleBuscar = async (valor) => {
 
@@ -88,6 +93,17 @@ const BuscarLivro = () => {
 
   return (
     <Box sx={{ mt: 8, textAlign: "center", px: 2 }}>
+      {isUserLoggedIn() && (
+        <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<AssignmentAddIcon />}
+            onClick={() => onNavigate('cadastrar')} // Redireciona para a nova página
+            sx={{ mb: 4, py: 1.5, fontSize: '1rem' }}
+        >
+            Cadastrar Novo Livro
+        </Button>
+      )}
       <Autocomplete
         freeSolo
         options={opcoes}
