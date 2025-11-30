@@ -207,7 +207,7 @@ const BuscarLivro = ({ onNavigate }) => {
         {resultados.map((livro, index) => (
           <Grid key={`${livro.id}-${index}`} item xs={12} sm={6} md={4}> 
             <Card
-              sx={{ display: "flex", flexDirection: "column", height: "100%", boxShadow: 3,
+              sx={{ display: "flex", flexDirection: "column", height: "100%", width: 250, boxShadow: 3,
                 "&:hover": {
                   boxShadow: 6,
                 }, 
@@ -222,7 +222,16 @@ const BuscarLivro = ({ onNavigate }) => {
                 />
               )}
               <CardContent sx={{ flexGrow: 1, pb: 1 }}>
-                <Typography variant="subtitle1" fontWeight="bold">
+                <Typography variant="subtitle1" fontWeight="bold"
+                sx={{
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 3, // Limita o título a 3 linhas
+                    WebkitBoxOrient: 'vertical',
+                    minHeight: '4.5em' // Altura mínima para 3 linhas de texto
+                  }}
+                  >
                   {livro.titulo}
                 </Typography>
                 <Typography variant="body2">{livro.autores}</Typography>
