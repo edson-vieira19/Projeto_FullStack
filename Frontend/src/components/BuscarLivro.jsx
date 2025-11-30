@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; 
 import {
   Box,
   TextField,
@@ -12,73 +12,107 @@ import {
   Grid,
   Snackbar,
   Alert,
-  Button,
-  InputAdornment
+  InputAdornment,
+  Button, 
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import AssignmentAddIcon from '@mui/icons-material/AssignmentAdd';
 import SearchIcon from "@mui/icons-material/Search";
 import { useLista } from "../contexts/ListaContext";
 
-const BuscarLivro = ({ onNavigate }) => {
-  //const [busca, setBusca] = useState("");
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
+const BuscarLivro = ({ onNavigate }) => { 
+  
   const [opcoes, setOpcoes] = useState([]);
   const [resultados, setResultados] = useState([]);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const { dispatch } = useLista();
-
+  const [error, setError] = useState(null); 
+  
   const isUserLoggedIn = () => {
     return !!localStorage.getItem('userToken');
   };
 
-  const handleBuscar = async (valor) => {
+  const handleBuscar = async (valor = "") => {
+    setError(null);
+    const token = localStorage.getItem('userToken');
 
-    //setBusca(valor);
-    if (valor.length < 3){
-      return;
-    } 
+    if (!token) {
+        setError("Você precisa estar logado para carregar e buscar livros.");
+        setResultados([]); 
+        return;
+    }
 
+    if (valor.length > 0 && valor.length < 3) {
+      setOpcoes([]);
+      if (valor.length === 0) handleBuscar(); 
+      return; 
+    }
+    
+    const query = valor.trim() ? `?title=${encodeURIComponent(valor.trim())}` : '';
+    
     try {
+      const response = await fetch(`${API_URL}/api/books${query}`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`, 
+          'Content-Type': 'application/json',
+        },
+      });
 
-      const apiKey = import.meta.env.VITE_GOOGLE_BOOKS_API_KEY;
-
-      const resposta = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=intitle:${encodeURIComponent(
-          valor
-        )}&langRestrict=pt&maxResults=6&key=${apiKey}`
-      );
-
-      const dados = await resposta.json();
-
-      if (dados.items) {
-        const livros = dados.items.map((item) => ({
-          id: item.id,
-          titulo: item.volumeInfo.title,
-          autores: item.volumeInfo.authors?.join(", ") || "Autor desconhecido",
-          ano: item.volumeInfo.publishedDate
-            ? item.volumeInfo.publishedDate.slice(0, 4)
-            : "N/A",
-          capa: item.volumeInfo.imageLinks?.thumbnail || "https://placehold.co/128x180?text=sem+capa",
-        }));
-        setOpcoes(livros);
-        setResultados(livros);
-      } else {
-        setOpcoes([]);
-        setResultados([]);
+      if (response.status === 401 || response.status === 403) {
+          localStorage.removeItem('userToken');
+          onNavigate('login');
+          return;
       }
-    } catch (error) {
-      console.error("Erro ao buscar livros:", error);
+
+      if (!response.ok) {
+        throw new Error("Falha ao buscar livros na API local.");
+      }
+
+      const data = await response.json();
+    
+      const booksArray = Array.isArray(data) ? data : (data.data || []);
+      
+      if (booksArray.length === 0) {
+         setError("Nenhum livro encontrado com o termo de busca.");
+      }
+      
+      const mappedBooks = booksArray.map(book => ({
+        id: book._id, 
+        titulo: book.title, 
+        autores: book.author, 
+        ano: book.year,
+        thumbnail: book.thumbnail,
+        label: `${book.title} (${book.author})`
+      }));
+
+
+      setResultados(mappedBooks);
+      setOpcoes(mappedBooks.map(book => book.label)); 
+
+    } catch (err) {
+      console.error("Erro na busca de livros:", err);
+      setError("Erro ao carregar os livros. Verifique se o Back-end está rodando.");
+      setResultados([]); 
+      setOpcoes([]);
     }
   };
 
-  const adicionarLivro = (livro) => {
-    dispatch({ type: "ADICIONAR", payload: livro });
-  };
+  useEffect(() => {
+    if(isUserLoggedIn()){
+      handleBuscar(); 
+    } else {
+         setError("Você precisa estar logado para carregar e buscar livros.");
+    }
+    
+  }, []); 
+
 
   const handleAdicionar = (livro) => {
-    adicionarLivro(livro);
+    dispatch({ type: "ADICIONAR_LIVRO", payload: livro });
     const shortTitle = 
       livro.titulo.length > 30
       ? livro.titulo.slice(0, 30).trim() + "..."
@@ -87,10 +121,17 @@ const BuscarLivro = ({ onNavigate }) => {
     setOpenSnackbar(true);
   };
 
-  const handleCloseSnackbar = () => {
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
     setOpenSnackbar(false);
   };
-
+  
+  const handleCadastroClick = () => {
+    onNavigate('cadastrar'); 
+  };
+  
   return (
     <Box sx={{ mt: 8, textAlign: "center", px: 2 }}>
       {isUserLoggedIn() && (
@@ -98,44 +139,44 @@ const BuscarLivro = ({ onNavigate }) => {
             variant="contained"
             color="secondary"
             startIcon={<AssignmentAddIcon />}
-            onClick={() => onNavigate('cadastrar')} // Redireciona para a nova página
+            onClick={handleCadastroClick}
             sx={{ mb: 4, py: 1.5, fontSize: '1rem' }}
         >
             Cadastrar Novo Livro
         </Button>
       )}
+      {error && (
+        <Alert severity="error" sx={{ mb: 3, maxWidth: 600, mx: 'auto' }}>
+            {error}
+        </Alert>
+      )}
       <Autocomplete
-        freeSolo
-        options={opcoes}
+        options={opcoes} 
         getOptionLabel={(option) =>
-          typeof option === "string" ? option : option.titulo
+          typeof option === "string" ? option : option.label 
         }
         renderOption={(props, option) => (
           <li {...props} key={option.id}>
             {option.titulo}
           </li>
         )}
-        onInputChange={(e, valor) => handleBuscar(valor)}
+        onInputChange={(e, valor) => {
+            handleBuscar(valor);
+        }}
+        onChange={(event, newValue) => {
+          if (newValue) {
+            const livroSelecionado = resultados.find(l => l.label === newValue);
+            setResultados(livroSelecionado ? [livroSelecionado] : []);
+          } else {
+            handleBuscar();
+          }
+        }}
+        
         renderInput={(params) => (
           <TextField
             {...params}
             label="Buscar livro pelo título"
             variant="outlined"
-            /* slotProps={{
-            input: {
-              ...params.InputProps,
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="ícone de busca"
-                    edge="end"
-                  >
-                    <SearchIcon />
-                  </IconButton>
-                </InputAdornment>
-              ),
-            },
-          }} */
             sx={{
               width: "100%",
               maxWidth: 550,
@@ -143,10 +184,20 @@ const BuscarLivro = ({ onNavigate }) => {
               bgcolor: "white",
               borderRadius: 2,
               boxShadow: 2,
+              mb: 4, 
+            }}
+            InputProps={{
+              ...params.InputProps,
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
             }}
           />
         )}
       />
+      
       <Grid
         container
         spacing={4}
@@ -154,14 +205,18 @@ const BuscarLivro = ({ onNavigate }) => {
         sx={{ mt: 4, mb: 6, maxWidth: 900, mx: "auto" }}
       >
         {resultados.map((livro, index) => (
-          <Grid key={`${livro.id}-${index}`} size={{ xs: 12, sm: 6, md: 4 }}>
+          <Grid key={`${livro.id}-${index}`} item xs={12} sm={6} md={4}> 
             <Card
-              sx={{ display: "flex", flexDirection: "column", height: "100%" }}
+              sx={{ display: "flex", flexDirection: "column", height: "100%", boxShadow: 3,
+                "&:hover": {
+                  boxShadow: 6,
+                }, 
+              }}
             >
-              {livro.capa && (
+              {livro.thumbnail && (
                 <CardMedia
                   component="img"
-                  image={livro.capa}
+                  image={livro.thumbnail}
                   alt={livro.titulo}
                   sx={{ height: 180, objectFit: "cover" }}
                 />
