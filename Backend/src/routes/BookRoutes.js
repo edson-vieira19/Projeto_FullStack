@@ -35,7 +35,7 @@ const deleteKeysByPattern = async (pattern) => {
             console.log("[REDIS DEBUG] 💣 Chaves para exclusão:", keys);
             console.log("Apagando chaves do Redis:", keys);
             const deletedCount = await redisClient.del(...keys); // Spread obrigatório!
-            console.log(`[REDIS DEBUG] 🔥 Chaves deletadas com sucesso: ${deletedCount}`);
+            console.log(`Chaves deletadas com sucesso: ${deletedCount}`);
         }
 
     } while (cursor !== '0');
