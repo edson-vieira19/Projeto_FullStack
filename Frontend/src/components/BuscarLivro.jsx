@@ -132,6 +132,7 @@ const BuscarLivro = ({ onNavigate }) => {
         return;
     }
     const token = localStorage.getItem('userToken');
+    
     if (!token || !isUserLoggedIn()) {
         setError('Sessão expirada. Faça login novamente.');
         onNavigate('login');

@@ -1,5 +1,3 @@
-// src/components/CadastrarLivro.jsx
-
 import React, { useState } from 'react';
 import { 
     Box, 
@@ -17,7 +15,7 @@ import SaveIcon from '@mui/icons-material/Save';
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 const CadastrarLivro = ({ onNavigate }) => {
-    // 1. Estados para o formulário e UI
+
     const [formData, setFormData] = useState({
         title: '',
         author: '',
@@ -39,7 +37,6 @@ const CadastrarLivro = ({ onNavigate }) => {
         setSnackbarOpen(false);
     };
 
-    // 2. Função de Envio (POST)
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError(null);
@@ -54,10 +51,9 @@ const CadastrarLivro = ({ onNavigate }) => {
         }
 
         try {
-            // Converte o ano para número, conforme seu Schema
+           
             const dataToSend = { ...formData, year: parseInt(formData.year) };
             
-            // Validação simples
             if (!dataToSend.title || !dataToSend.author || isNaN(dataToSend.year)) {
                  throw new Error("Preencha todos os campos obrigatórios (Título, Autor e Ano).");
             }
@@ -73,7 +69,6 @@ const CadastrarLivro = ({ onNavigate }) => {
 
             setLoading(false);
 
-            // Se o token for inválido, o middleware devolve 401/403
             if (response.status === 401 || response.status === 403) {
                  localStorage.removeItem('userToken');
                  onNavigate('login');
@@ -81,17 +76,17 @@ const CadastrarLivro = ({ onNavigate }) => {
             }
 
             if (!response.ok) {
-                // Tenta ler a mensagem de erro da API
                 const errorData = await response.json();
                 throw new Error(errorData.msg || "Erro desconhecido ao cadastrar o livro.");
             }
 
             const newBook = await response.json();
             
-            // Sucesso! Limpa o formulário e exibe a mensagem
             setFormData({ title: '', author: '', year: '', thumbnail: '' }); 
             setSnackbarMessage(`Livro "${newBook.title}" cadastrado com sucesso!`);
             setSnackbarOpen(true);
+
+            setTimeout(() => onNavigate('buscar'), 800);
 
         } catch (err) {
             console.error("Erro no cadastro:", err);
@@ -100,7 +95,6 @@ const CadastrarLivro = ({ onNavigate }) => {
         }
     };
 
-    // 3. Renderização
     return (
         <Container maxWidth="sm" sx={{ mt: 8, mb: 4 }}>
             <Paper elevation={3} sx={{ p: 4 }}>

@@ -12,15 +12,21 @@ const getCacheKey = (req) => {
 };
 
 const deleteKeysByPattern = async (pattern) => {
-    let cursor = '0'; 
+    let cursor = '0';
+
     do {
-        const [nextCursor, keys] = await redisClient.scan(cursor, 'MATCH', pattern, 'COUNT', 100);
+        const { cursor: nextCursor, keys } = await redisClient.scan(cursor, {
+            MATCH: pattern,
+            COUNT: 200
+        });
+
         cursor = nextCursor;
 
         if (keys.length > 0) {
-            await redisClient.del(keys);
-            console.log(`Redis: Deletadas ${keys.length} chaves que correspondem a ${pattern}`);
+            console.log("Apagando chaves do Redis:", keys);
+            await redisClient.del(...keys); // Spread obrigatório!
         }
+
     } while (cursor !== '0');
 };
 
@@ -150,6 +156,9 @@ router.put('/books/:id', authenticateToken, async (req, res) => {
         res.json(updatedBook);
 
     } catch (error) {
+
+        console.error("ERRO CRÍTICO NO CADASTRO DE LIVRO:", error);
+
         if (error.name === 'ValidationError') {
              return res.status(400).json({ msg: 'Dados inválidos para atualização.', details: error.message });
         }
@@ -168,16 +177,19 @@ router.delete('/books/:id', authenticateToken, async (req, res) => {
             return res.status(404).json({ msg: 'Livro não encontrado para exclusão.' });
         }
         
-        await deleteKeysByPattern('books:*'); 
+        await deleteKeysByPattern('books:*');  
         console.log(`Cache invalidado. Livro excluído: ${deletedBook.title}`); 
 
         res.status(204).send(); 
 
     } catch (error) {
-        if (error.name === 'CastError') {
+
+        console.error("🔥 ERRO AO EXCLUIR LIVRO:", error);
+        /* if (error.name === 'CastError') {
              return res.status(400).json({ msg: 'ID de livro inválido.' });
-        }
-        res.status(500).json({ msg: 'Erro interno do servidor.' });
+        } */
+       return res.status(500).json({ msg: 'Erro interno do servidor.', details: error.message });
+        
     }
 });
 
