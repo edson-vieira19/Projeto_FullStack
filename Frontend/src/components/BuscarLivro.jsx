@@ -132,7 +132,7 @@ const BuscarLivro = ({ onNavigate }) => {
         return;
     }
     const token = localStorage.getItem('userToken');
-    
+
     if (!token || !isUserLoggedIn()) {
         setError('Sessão expirada. Faça login novamente.');
         onNavigate('login');
@@ -235,7 +235,12 @@ const BuscarLivro = ({ onNavigate }) => {
 
 
   const handleAdicionar = (livro) => {
-    dispatch({ type: "ADICIONAR_LIVRO", payload: livro });
+
+    console.log("dentro da funcao handleAdicionar")
+    console.log(livro);
+
+    dispatch({ type: "ADICIONAR", payload: livro });
+
     const shortTitle = 
       livro.titulo.length > 30
       ? livro.titulo.slice(0, 30).trim() + "..."

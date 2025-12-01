@@ -15,6 +15,8 @@ import { useLista } from "../contexts/ListaContext";
 const MinhaLista = () => {
   const { state, dispatch } = useLista();
 
+  console.log("Estado da Lista de Leitura:", state.livros);
+
   return (
     <Box sx={{ mt: 6, px: 2, maxWidth: 700, mx: "auto" }}>
       <Typography variant="h5" mb={2}>
