@@ -33,11 +33,13 @@ git clone https://github.com/edson-vieira19/Projeto_FullStack
 ### 2. Rodar o ambiente docker na pasta do projeto
 
 cd Projeto_FullStack
+
 docker compose up -d
 
 ### 3. Executar o Script de povoamento (opcional)
 
 cd Backend
+
 npm run seed
 
 ### 4. Executar o Backend
@@ -47,6 +49,7 @@ npm start
 ### 5. Executar o FrontEnd
 
 cd ../FrontEnd
+
 npm run dev
 
 ### 6 Acessar a Aplicação
