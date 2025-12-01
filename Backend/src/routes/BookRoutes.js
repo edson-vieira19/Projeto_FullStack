@@ -13,21 +13,38 @@ const getCacheKey = (req) => {
 
 const deleteKeysByPattern = async (pattern) => {
     let cursor = '0';
-
+    console.log(`[REDIS DEBUG] 🚦 Tentativa de invalidar cache com o padrão: ${pattern}`);
+    
+    try{
     do {
-        const { cursor: nextCursor, keys } = await redisClient.scan(cursor, {
-            MATCH: pattern,
-            COUNT: 200
+      
+        const resultadoScan = await redisClient.scan(cursor, {
+          MATCH: pattern,
+          COUNT: 200,
         });
+
+        //console.log('SCAN result type:', typeof resultadoScan, resultadoScan);
+
+        const { cursor: nextCursor, keys } = resultadoScan;
 
         cursor = nextCursor;
 
+        //console.log(` SCAN Concluído. Próximo Cursor: ${cursor}. Chaves Encontradas: ${keys.length}`);
+
         if (keys.length > 0) {
+            console.log("[REDIS DEBUG] 💣 Chaves para exclusão:", keys);
             console.log("Apagando chaves do Redis:", keys);
-            await redisClient.del(...keys); // Spread obrigatório!
+            const deletedCount = await redisClient.del(...keys); // Spread obrigatório!
+            console.log(`[REDIS DEBUG] 🔥 Chaves deletadas com sucesso: ${deletedCount}`);
         }
 
     } while (cursor !== '0');
+
+    //console.log(`Invalidação completa. Total de chaves apagadas: ${totalKeysDeleted}`);
+    } catch (error) {
+        // 5. Log em caso de erro de conexão ou comando
+        console.error("[REDIS ERRO] ❌ Falha na função deleteKeysByPattern:", error);
+    }
 };
 
 router.post('/books', authenticateToken, async (req, res) => {
