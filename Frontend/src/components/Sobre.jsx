@@ -3,7 +3,6 @@ import { Box, Typography, Container, Paper } from "@mui/material";
 export default function Sobre() {
 
   return (
-
         <Box
       sx={{
         flexGrow: 1,

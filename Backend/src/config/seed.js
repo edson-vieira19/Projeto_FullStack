@@ -73,7 +73,7 @@ async function seedDB() {
         console.log(` ${usersData.length} Usuários inseridos com sucesso`);
 
     } catch (error) {
-        console.error('❌ Erro no povoamento do DB:', error);
+        console.error('Erro no povoamento do DB:', error);
     } finally {
         await mongoose.disconnect(); 
         console.log('--- Conexão com MongoDB fechada. ---');

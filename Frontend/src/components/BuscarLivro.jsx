@@ -408,7 +408,7 @@ const BuscarLivro = ({ onNavigate }) => {
                     
                     <Tooltip title="Excluir Livro">
                         <IconButton
-                            onClick={() => handleDelete(livro.id)} // Usando livro.id (que é o _id do MongoDB)
+                            onClick={() => handleDelete(livro.id)} 
                             color="error"
                             size="small"
                         >

@@ -46,7 +46,6 @@ router.post('/books', authenticateToken, async (req, res) => {
     });
 
     const book = await newBook.save();
-    
     await deleteKeysByPattern('books:*');
     console.log(`Cache invalidado. Livro inserido por ${req.user.username}: ${book.title}`); 
 
@@ -56,7 +55,7 @@ router.post('/books', authenticateToken, async (req, res) => {
     if (error.name === 'ValidationError') {
         return res.status(400).json({ msg: 'Dados inválidos.', details: error.message });
     }
-    res.status(500).json({ msg: 'Erro interno do servidor.' });
+    return res.status(500).json({ msg: 'Erro interno do servidor.' });
   }
 });
 
@@ -129,7 +128,6 @@ router.get('/books/:id', authenticateToken, async (req, res) => {
     }
 });
 
-
 //atualizar livro pelo id, requer token
 router.put('/books/:id', authenticateToken, async (req, res) => {
     try {
@@ -138,7 +136,7 @@ router.put('/books/:id', authenticateToken, async (req, res) => {
         
         if (req.body.title) updates.title = sanitize(req.body.title);
         if (req.body.author) updates.author = sanitize(req.body.author);
-        if (req.body.year) updates.year = req.body.year; // O ano é um número, não precisa de sanitize de string
+        if (req.body.year) updates.year = req.body.year;
         if (req.body.thumbnail) updates.thumbnail = sanitize(req.body.thumbnail);
 
         const updatedBook = await Book.findByIdAndUpdate(

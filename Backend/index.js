@@ -5,7 +5,7 @@ console.log('Variável MONGODB_URI lida:', process.env.MONGODB_URI);
 const express = require('express')
 const connectDB = require('./src/config/db');
 const authRoutes = require('./src/routes/authRoutes');
-const bookRoutes = require('./src/routes/bookRoutes');
+const bookRoutes = require('./src/routes/BookRoutes');
 const compression = require('compression');
 const cors = require('cors');
 

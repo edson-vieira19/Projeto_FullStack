@@ -3,7 +3,6 @@ import { Box, Typography, Link } from "@mui/material";
 
 function Footer(){
 
-
     return(<Box
       component="footer"
       sx={{
@@ -20,9 +19,5 @@ function Footer(){
     </Box>
     );
 }
-
-
-
-
 
 export default Footer
