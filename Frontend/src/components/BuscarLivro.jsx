@@ -184,7 +184,7 @@ const BuscarLivro = ({ onNavigate }) => {
             ...editFormData, 
             year: parseInt(editFormData.year),
         };
-        
+
         if (!dataToSend.title || !dataToSend.author || isNaN(dataToSend.year)) {
              throw new Error("Preencha Título, Autor e Ano válidos.");
         }

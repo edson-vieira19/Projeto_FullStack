@@ -3,17 +3,16 @@ const Book = require('../models/Book');
 const authenticateToken = require('./authMiddleware');
 const redisClient = require('../config/redis'); 
 const router = express.Router();
-
-const sanitize = (param) => param ? param.replace(/[$;()]/g, "") : param; 
+const logger = require('../config/logger');
 
 const getCacheKey = (req) => {
     const { page = 1, limit = 10, title = '' } = req.query;
-    return `books:page:${page}:limit:${limit}:title:${sanitize(title)}`;
+    return `books:page:${page}:limit:${limit}:title:${title}`;
 };
 
 const deleteKeysByPattern = async (pattern) => {
     let cursor = '0';
-    console.log(`[REDIS DEBUG] 🚦 Tentativa de invalidar cache com o padrão: ${pattern}`);
+    logger.info(` Tentativa de invalidar cache com o padrão: ${pattern}`);
     
     try{
     do {
@@ -32,10 +31,9 @@ const deleteKeysByPattern = async (pattern) => {
         //console.log(` SCAN Concluído. Próximo Cursor: ${cursor}. Chaves Encontradas: ${keys.length}`);
 
         if (keys.length > 0) {
-            console.log("[REDIS DEBUG] 💣 Chaves para exclusão:", keys);
-            console.log("Apagando chaves do Redis:", keys);
+            logger.info(`[REDIS] Apagando ${keys.length} chaves que correspondem a ${pattern}.`);
             const deletedCount = await redisClient.del(...keys); // Spread obrigatório!
-            console.log(`Chaves deletadas com sucesso: ${deletedCount}`);
+            logger.info(`Chaves deletadas com sucesso: ${deletedCount}`);
         }
 
     } while (cursor !== '0');
@@ -43,7 +41,7 @@ const deleteKeysByPattern = async (pattern) => {
     //console.log(`Invalidação completa. Total de chaves apagadas: ${totalKeysDeleted}`);
     } catch (error) {
         // 5. Log em caso de erro de conexão ou comando
-        console.error("[REDIS ERRO] ❌ Falha na função deleteKeysByPattern:", error);
+        logger.error("[REDIS ERRO]  Falha na função deleteKeysByPattern:", error);
     }
 };
 
@@ -56,15 +54,15 @@ router.post('/books', authenticateToken, async (req, res) => {
     }
 
     const newBook = new Book({
-      title: sanitize(title),
-      author: sanitize(author),
+      title: title,
+      author: author,
       year: year,
-      thumbnail: sanitize(thumbnail)
+      thumbnail: thumbnail
     });
 
     const book = await newBook.save();
     await deleteKeysByPattern('books:*');
-    console.log(`Cache invalidado. Livro inserido por ${req.user.username}: ${book.title}`); 
+    logger.info(`Cache invalidado. Livro inserido por ${req.user.username}: ${book.title}`); 
 
     res.status(201).json(book);
 
@@ -80,14 +78,14 @@ router.get('/books', authenticateToken, async (req, res) => {
 
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
-  const searchTerm = sanitize(req.query.title);
+  const searchTerm = req.query.title;
   const skip = (page - 1) * limit;
 
   const cacheKey = getCacheKey(req);
   const cachedData = await redisClient.get(cacheKey);
 
   if (cachedData) {
-    console.log(`Cache Hit: Retornando livros (Pág ${cacheKey}) do Redis.`);
+    console.info(`Cache Hit: Retornando livros (Pág ${cacheKey}) do Redis.`);
     return res.json(JSON.parse(cachedData));
   }
 
@@ -115,12 +113,12 @@ router.get('/books', authenticateToken, async (req, res) => {
     };
 
     await redisClient.setEx(cacheKey, 3600, JSON.stringify(responseData)); 
-    console.log(`Cache Miss: Buscando livros (Pág ${page}) no DB e armazenando no Redis.`);
-    console.log(`Busca de livros realizada por ${req.user.username}`); 
+    logger.info(`Cache Miss: Buscando livros (Pág ${page}) no DB e armazenando no Redis.`);
+    logger.info(`Busca de livros realizada por ${req.user.username}`); 
 
     res.json(responseData);
   } catch (error) {
-    console.error('ERRO NA BUSCA:', error);
+    logger.error('ERRO NA BUSCA:', error);
     res.status(500).json({ msg: 'Erro interno do servidor.' });
   }
 });
@@ -128,7 +126,7 @@ router.get('/books', authenticateToken, async (req, res) => {
 
 router.get('/books/:id', authenticateToken, async (req, res) => {
     try {
-        const bookId = sanitize(req.params.id);
+        const bookId = req.params.id;
 
         const book = await Book.findById(bookId);
 
@@ -148,13 +146,15 @@ router.get('/books/:id', authenticateToken, async (req, res) => {
 //atualizar livro pelo id, requer token
 router.put('/books/:id', authenticateToken, async (req, res) => {
     try {
-        const bookId = sanitize(req.params.id);
+        const bookId = req.params.id;
         const updates = {};
+
+        console.log(req.body);
         
-        if (req.body.title) updates.title = sanitize(req.body.title);
-        if (req.body.author) updates.author = sanitize(req.body.author);
+        if (req.body.title) updates.title = req.body.title;
+        if (req.body.author) updates.author = req.body.author;
         if (req.body.year) updates.year = req.body.year;
-        if (req.body.thumbnail) updates.thumbnail = sanitize(req.body.thumbnail);
+        if (req.body.thumbnail) updates.thumbnail = req.body.thumbnail;
 
         const updatedBook = await Book.findByIdAndUpdate(
             bookId, 
@@ -166,13 +166,13 @@ router.put('/books/:id', authenticateToken, async (req, res) => {
         }
         
         await deleteKeysByPattern('books:*');
-        console.log(`Cache invalidado. Livro atualizado: ${updatedBook.title}`); 
+        logger.info(`Cache invalidado. Livro atualizado: ${updatedBook.title}`); 
 
         res.json(updatedBook);
 
     } catch (error) {
 
-        console.error("ERRO CRÍTICO NO CADASTRO DE LIVRO:", error);
+        logger.error("ERRO CRÍTICO NO CADASTRO DE LIVRO:", error);
 
         if (error.name === 'ValidationError') {
              return res.status(400).json({ msg: 'Dados inválidos para atualização.', details: error.message });
@@ -184,7 +184,7 @@ router.put('/books/:id', authenticateToken, async (req, res) => {
 //operação de deletar usando token
 router.delete('/books/:id', authenticateToken, async (req, res) => {
     try {
-        const bookId = sanitize(req.params.id);
+        const bookId = req.params.id;
 
         const deletedBook = await Book.findByIdAndDelete(bookId);
 
@@ -193,13 +193,13 @@ router.delete('/books/:id', authenticateToken, async (req, res) => {
         }
         
         await deleteKeysByPattern('books:*');  
-        console.log(`Cache invalidado. Livro excluído: ${deletedBook.title}`); 
+        logger.info(`Cache invalidado. Livro excluído: ${deletedBook.title}`); 
 
         res.status(204).send(); 
 
     } catch (error) {
 
-        console.error("🔥 ERRO AO EXCLUIR LIVRO:", error);
+        logger.error("ERRO AO EXCLUIR LIVRO:", error);
         /* if (error.name === 'CastError') {
              return res.status(400).json({ msg: 'ID de livro inválido.' });
         } */

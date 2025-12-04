@@ -1,0 +1,2 @@
+2025-12-03 14:42:40 [error]: Falha na conexão com o MongoDB: options is not defined
+2025-12-03 14:53:53 [error]: ERRO CRÍTICO NO CADASTRO DE LIVRO: sanitize is not defined

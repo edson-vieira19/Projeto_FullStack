@@ -1,0 +1,223 @@
+2025-12-03 14:42:40 [error]: Falha na conexão com o MongoDB: options is not defined
+2025-12-03 14:45:38 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-03 14:47:40 [info]: Redis conectado com sucesso!
+2025-12-03 14:47:40 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-03 14:49:47 [info]: Redis conectado com sucesso!
+2025-12-03 14:49:47 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-03 14:52:14 [info]: Redis conectado com sucesso!
+2025-12-03 14:52:14 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-03 14:52:18 [info]: Login bem-sucedido para o usuário: admin.
+2025-12-03 14:53:15 [info]: Redis conectado com sucesso!
+2025-12-03 14:53:15 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-03 14:53:40 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-03 14:53:40 [info]: Busca de livros realizada por admin
+2025-12-03 14:53:53 [error]: ERRO CRÍTICO NO CADASTRO DE LIVRO: sanitize is not defined
+2025-12-03 14:56:40 [info]: Redis conectado com sucesso!
+2025-12-03 14:56:40 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-03 14:58:16 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-03 14:58:16 [info]: Chaves deletadas com sucesso: 1
+2025-12-03 14:58:16 [info]: Cache invalidado. Livro inserido por admin: A Metamorfose
+2025-12-03 14:58:17 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-03 14:58:17 [info]: Busca de livros realizada por admin
+2025-12-03 14:58:34 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-03 14:58:34 [info]: Chaves deletadas com sucesso: 1
+2025-12-03 14:58:34 [info]: Cache invalidado. Livro atualizado: A Metamorfose
+2025-12-03 14:58:34 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-03 14:58:34 [info]: Busca de livros realizada por admin
+2025-12-03 14:59:17 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-03 14:59:17 [info]: Chaves deletadas com sucesso: 1
+2025-12-03 14:59:17 [info]: Cache invalidado. Livro atualizado: A Metamorfose
+2025-12-03 14:59:17 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-03 14:59:17 [info]: Busca de livros realizada por admin
+2025-12-03 14:59:25 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-03 14:59:25 [info]: Busca de livros realizada por admin
+2025-12-03 14:59:25 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-03 14:59:25 [info]: Busca de livros realizada por admin
+2025-12-03 15:00:11 [info]: [REDIS] Apagando 3 chaves que correspondem a books:*.
+2025-12-03 15:00:11 [info]: Chaves deletadas com sucesso: 1
+2025-12-03 15:00:11 [info]: Cache invalidado. Livro atualizado: A Metamorfose
+2025-12-03 15:03:39 [info]: [REDIS] Apagando 2 chaves que correspondem a books:*.
+2025-12-03 15:03:39 [info]: Chaves deletadas com sucesso: 1
+2025-12-03 15:03:39 [info]: Cache invalidado. Livro atualizado: A Metamorfose
+2025-12-03 15:03:53 [info]: Redis conectado com sucesso!
+2025-12-03 15:03:53 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-03 15:04:18 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-03 15:04:18 [info]: Chaves deletadas com sucesso: 1
+2025-12-03 15:04:18 [info]: Cache invalidado. Livro atualizado: A Metamorfose
+2025-12-03 15:04:18 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-03 15:04:18 [info]: Busca de livros realizada por admin
+2025-12-03 15:08:50 [info]: Redis conectado com sucesso!
+2025-12-03 15:08:50 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-03 15:09:59 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-03 15:09:59 [info]: Chaves deletadas com sucesso: 1
+2025-12-03 15:09:59 [info]: Cache invalidado. Livro inserido por admin: Cosmos
+2025-12-03 15:10:00 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-03 15:10:00 [info]: Busca de livros realizada por admin
+2025-12-03 15:17:36 [info]: Redis conectado com sucesso!
+2025-12-03 15:17:36 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-03 15:18:22 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-03 15:18:22 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-03 15:18:22 [info]: Chaves deletadas com sucesso: 1
+2025-12-03 15:18:22 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-03 15:18:22 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-03 15:18:22 [info]: Busca de livros realizada por admin
+2025-12-03 15:18:46 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-03 15:18:46 [info]: Busca de livros realizada por admin
+2025-12-03 15:18:47 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-03 15:18:47 [info]: Busca de livros realizada por admin
+2025-12-03 15:21:16 [info]: Redis conectado com sucesso!
+2025-12-03 15:21:16 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-03 15:21:49 [info]: url da capa atualizada: https:m.media-amazon.comimagesI71zVhbnKmfL._SY466_.jpg
+2025-12-03 15:21:49 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-03 15:21:49 [info]: [REDIS] Apagando 3 chaves que correspondem a books:*.
+2025-12-03 15:21:49 [info]: Chaves deletadas com sucesso: 1
+2025-12-03 15:21:49 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-03 15:27:33 [info]: Redis conectado com sucesso!
+2025-12-03 15:27:33 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-03 15:28:08 [info]: url da capa atualizada: https:m.media-amazon.comimagesI71zVhbnKmfL._SY466_.jpg
+2025-12-03 15:28:08 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-03 15:28:08 [info]: [REDIS] Apagando 2 chaves que correspondem a books:*.
+2025-12-03 15:28:08 [info]: Chaves deletadas com sucesso: 1
+2025-12-03 15:28:08 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-03 15:31:42 [info]: Redis conectado com sucesso!
+2025-12-03 15:31:42 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-03 15:32:05 [info]: url da capa atualizada: https:m.media-amazon.comimagesI71zVhbnKmfL._SY466_.jpg
+2025-12-03 15:32:05 [info]: 
+2025-12-03 15:32:05 [info]: [object Object]
+2025-12-03 15:32:05 [info]: 
+2025-12-03 15:32:05 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-03 15:32:05 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-03 15:32:05 [info]: Chaves deletadas com sucesso: 1
+2025-12-03 15:32:05 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-03 15:32:05 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-03 15:32:05 [info]: Busca de livros realizada por admin
+2025-12-03 15:34:00 [info]: url da capa atualizada: https:m.media-amazon.comimagesI71zVhbnKmfL._SY466_.jpg
+2025-12-03 15:34:00 [info]: 
+2025-12-03 15:34:00 [info]: [object Object]
+2025-12-03 15:34:00 [info]: 
+2025-12-03 15:34:00 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-03 15:34:00 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-03 15:34:00 [info]: Chaves deletadas com sucesso: 1
+2025-12-03 15:34:00 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-03 15:34:00 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-03 15:34:00 [info]: Busca de livros realizada por admin
+2025-12-03 15:34:37 [info]: Redis conectado com sucesso!
+2025-12-03 15:34:37 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-03 15:34:57 [info]: url da capa atualizada: https:m.media-amazon.comimagesI71zVhbnKmfL._SY466_.jpg
+2025-12-03 15:34:57 [info]: 
+2025-12-03 15:34:57 [info]: 
+2025-12-03 15:34:57 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-03 15:34:57 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-03 15:34:57 [info]: Chaves deletadas com sucesso: 1
+2025-12-03 15:34:57 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-03 15:34:57 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-03 15:34:57 [info]: Busca de livros realizada por admin
+2025-12-03 15:46:06 [info]: Redis conectado com sucesso!
+2025-12-03 15:46:06 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-03 15:46:35 [info]: url da capa atualizada: https:m.media-amazon.comimagesI71zVhbnKmfL._SY466_.jpg
+2025-12-03 15:46:35 [info]: 
+2025-12-03 15:46:35 [info]: 
+2025-12-03 15:46:35 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-03 15:46:35 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-03 15:46:35 [info]: Chaves deletadas com sucesso: 1
+2025-12-03 15:46:35 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-03 15:46:35 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-03 15:46:35 [info]: Busca de livros realizada por admin
+2025-12-04 13:39:23 [info]: Redis conectado com sucesso!
+2025-12-04 13:39:23 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-04 13:39:49 [info]: Login bem-sucedido para o usuário: admin.
+2025-12-04 13:39:51 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-04 13:39:51 [info]: Busca de livros realizada por admin
+2025-12-04 13:41:01 [info]: url da capa atualizada: https:m.media-amazon.comimagesI71zVhbnKmfL._SY466_.jpg
+2025-12-04 13:41:01 [info]: 
+2025-12-04 13:41:01 [info]: 
+2025-12-04 13:41:01 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-04 13:41:01 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-04 13:41:01 [info]: Chaves deletadas com sucesso: 1
+2025-12-04 13:41:01 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-04 13:41:01 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-04 13:41:01 [info]: Busca de livros realizada por admin
+2025-12-04 13:49:44 [info]: Redis conectado com sucesso!
+2025-12-04 13:49:44 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-04 13:51:51 [info]: Redis conectado com sucesso!
+2025-12-04 13:51:51 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-04 13:52:11 [info]: url da capa atualizada: https:m.media-amazon.comimagesI71zVhbnKmfL._SY466_.jpg
+2025-12-04 13:52:11 [info]: 
+2025-12-04 13:52:11 [info]: 
+2025-12-04 13:52:11 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-04 13:52:11 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-04 13:52:11 [info]: Chaves deletadas com sucesso: 1
+2025-12-04 13:52:11 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-04 13:52:11 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-04 13:52:11 [info]: Busca de livros realizada por admin
+2025-12-04 13:57:11 [info]: url da capa atualizada: https:m.media-amazon.comimagesI71zVhbnKmfL._SY466_.jpg
+2025-12-04 13:57:11 [info]: 
+2025-12-04 13:57:11 [info]: 
+2025-12-04 13:57:11 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-04 13:57:11 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-04 13:57:11 [info]: Chaves deletadas com sucesso: 1
+2025-12-04 13:57:11 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-04 13:57:11 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-04 13:57:11 [info]: Busca de livros realizada por admin
+2025-12-04 14:01:35 [info]: Redis conectado com sucesso!
+2025-12-04 14:01:35 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-04 14:01:47 [info]: url da capa atualizada: https:m.media-amazon.comimagesI71zVhbnKmfL._SY466_.jpg
+2025-12-04 14:01:47 [info]: 
+2025-12-04 14:01:47 [info]: 
+2025-12-04 14:01:47 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-04 14:01:47 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-04 14:01:47 [info]: Chaves deletadas com sucesso: 1
+2025-12-04 14:01:47 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-04 14:01:47 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-04 14:01:47 [info]: Busca de livros realizada por admin
+2025-12-04 14:02:49 [info]: Redis conectado com sucesso!
+2025-12-04 14:02:49 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-04 14:03:26 [info]: url da capa atualizada: https:m.media-amazon.comimagesI71zVhbnKmfL._SY466_.jpg
+2025-12-04 14:03:26 [info]: 
+2025-12-04 14:03:26 [info]: 
+2025-12-04 14:03:26 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-04 14:03:26 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-04 14:03:26 [info]: Chaves deletadas com sucesso: 1
+2025-12-04 14:03:26 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-04 14:03:26 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-04 14:03:26 [info]: Busca de livros realizada por admin
+2025-12-04 14:05:17 [info]: Redis conectado com sucesso!
+2025-12-04 14:05:17 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-04 14:06:00 [info]: url da capa atualizada: https:m.media-amazon.comimagesI71zVhbnKmfL._SY466_.jpg
+2025-12-04 14:06:00 [info]: 
+2025-12-04 14:06:00 [info]: 
+2025-12-04 14:06:00 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-04 14:06:00 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-04 14:06:00 [info]: Chaves deletadas com sucesso: 1
+2025-12-04 14:06:00 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-04 14:06:00 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-04 14:06:00 [info]: Busca de livros realizada por admin
+2025-12-04 14:11:43 [info]: Redis conectado com sucesso!
+2025-12-04 14:11:43 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-04 14:12:13 [info]: url da capa atualizada: https:m.media-amazon.comimagesI71zVhbnKmfL._SY466_.jpg
+2025-12-04 14:12:13 [info]: 
+2025-12-04 14:12:13 [info]: 
+2025-12-04 14:12:13 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-04 14:12:13 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-04 14:12:13 [info]: Chaves deletadas com sucesso: 1
+2025-12-04 14:12:13 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-04 14:12:14 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-04 14:12:14 [info]: Busca de livros realizada por admin
+2025-12-04 14:20:10 [info]: Redis conectado com sucesso!
+2025-12-04 14:20:10 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-04 14:20:29 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-04 14:20:29 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-04 14:20:29 [info]: Chaves deletadas com sucesso: 1
+2025-12-04 14:20:29 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-04 14:20:29 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-04 14:20:29 [info]: Busca de livros realizada por admin
+2025-12-04 14:22:11 [info]: Redis conectado com sucesso!
+2025-12-04 14:22:11 [info]: MongoDB conectado com sucesso! Pool Size: 10
+2025-12-04 14:22:27 [info]:  Tentativa de invalidar cache com o padrão: books:*
+2025-12-04 14:22:27 [info]: [REDIS] Apagando 1 chaves que correspondem a books:*.
+2025-12-04 14:22:27 [info]: Chaves deletadas com sucesso: 1
+2025-12-04 14:22:27 [info]: Cache invalidado. Livro atualizado: Cosmos
+2025-12-04 14:22:27 [info]: Cache Miss: Buscando livros (Pág 1) no DB e armazenando no Redis.
+2025-12-04 14:22:27 [info]: Busca de livros realizada por admin
+2025-12-04 14:27:05 [info]: Redis conectado com sucesso!
+2025-12-04 14:27:05 [info]: MongoDB conectado com sucesso! Pool Size: 10

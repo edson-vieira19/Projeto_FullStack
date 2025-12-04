@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const router = express.Router();
 const bcrypt = require('bcrypt');
+const logger = require('../config/logger');
 
 const SECRET_KEY = process.env.JWT_SECRET;
 
@@ -19,16 +20,18 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ username });
 
     if (!user) {
-      console.log(`Tentativa de login falhou para o usuário: ${username}`);
+      logger.warn(`Tentativa de login falhou para o usuário: ${username}. Usuário não encontrado.`);
       return res.status(401).json({ msg: 'Credenciais inválidas.' });
     }
 
     const isMatch = await user.comparePassword(password);
 
     if (!isMatch) {
-      console.log(`Tentativa de login falhou para o usuário: ${username}`);
+      logger.warn(`Tentativa de login falhou para o usuário: ${username}. Senha incorreta`);
       return res.status(401).json({ msg: 'Credenciais inválidas.' });
     }
+
+    logger.info(`Login bem-sucedido para o usuário: ${user.username}.`);
 
     const token = jwt.sign(
       { id: user._id, username: user.username },
@@ -37,12 +40,13 @@ router.post('/login', async (req, res) => {
     );
 
     res.json({ token });
+
   } catch (error) {
     res.status(500).json({ msg: 'Erro interno do servidor.' });
   }
 });
 
-router.post('/register', async (req, res) => {
+router.post('/user', async (req, res) => {
     try {
         const { username, password } = req.body;
         
